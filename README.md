@@ -10,3 +10,4 @@ Author: bell07
 Mod | Description
 -- | --
 smart_sfinv_creative | Replace the default items grouping (Nodes, Tools, Items) by more meaningfull groups per installed mod
+smart_sfinv_navfs | Move all creative groups to left site table for beter overview
