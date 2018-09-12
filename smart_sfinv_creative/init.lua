@@ -39,7 +39,7 @@ end
 ------------------------------------------------------------------------
 -- Get group assignment for item
 ------------------------------------------------------------------------
-local function get_group_addingment(def)
+local function get_group_assingment(def)
 	return def.mod_origin
 end
 
@@ -52,7 +52,7 @@ minetest.after(0,function()
 		if def.groups.not_in_creative_inventory ~= 1 and
 				def.description and def.description ~= "" then
 
-			local group = get_group_addingment(def)
+			local group = get_group_assingment(def)
 			local itemgroup = get_or_new_itemgroup(group)
 			itemgroup.items[itemname] = def
 			table.insert(itemgroup.items_unordered, def)
