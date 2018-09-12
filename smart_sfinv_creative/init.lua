@@ -35,9 +35,9 @@ end
 -- Process items after all mods loaded
 ------------------------------------------------------------------------
 minetest.after(0,function()
-	------------------------------------------------------------------------
-	-- Compat to creative mod - remove hardcoded grouped pages
-	------------------------------------------------------------------------
+	--------------------------------------------------------------------
+	-- Compat to creative mod - replace hardcoded grouped pages
+	--------------------------------------------------------------------
 	local unregister = {
 			["creative:nodes"] = true,
 			["creative:tools"] = true,
@@ -57,7 +57,9 @@ minetest.after(0,function()
 		end
 	end
 
+	--------------------------------------------------------------------
 	-- Sort items to groups
+	--------------------------------------------------------------------
 	for itemname, def in pairs(minetest.registered_items) do
 		if def.groups.not_in_creative_inventory ~= 1 and
 				def.description and def.description ~= "" then
@@ -69,7 +71,9 @@ minetest.after(0,function()
 		end
 	end
 
+	--------------------------------------------------------------------
 	-- register groups
+	--------------------------------------------------------------------
 	table.sort(itemgroups_unordered, function(a,b) return a.name < b.name end)
 	local misc_group = get_or_new_itemgroup("other")
 
@@ -87,6 +91,9 @@ minetest.after(0,function()
 		end
 	end
 
+	--------------------------------------------------------------------
+	-- restore pages after the replaced groups
+	--------------------------------------------------------------------
 	for _, page in ipairs(pages_to_end) do
 		sfinv.register_page(page.name, page)
 	end
