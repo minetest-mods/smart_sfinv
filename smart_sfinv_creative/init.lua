@@ -50,6 +50,8 @@ minetest.after(0,function()
 		local page = sfinv.pages_unordered[idx]
 		if unregister[page.name] then
 			move_to_end = false
+			sfinv.pages[page.name] = nil
+			table.remove(sfinv.pages_unordered, idx)
 		elseif move_to_end then
 			table.insert(pages_to_end, 1, page)
 			sfinv.pages[page.name] = nil
