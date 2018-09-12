@@ -40,6 +40,13 @@ end
 -- Get group assignment for item
 ------------------------------------------------------------------------
 local function get_group_assingment(def)
+
+	-- Order all stairs and slabs to the stairs group
+	if def.groups.stair or def.groups.slab then
+		return "stairs"
+	end
+
+	-- Group by mod origin by default
 	return def.mod_origin
 end
 
