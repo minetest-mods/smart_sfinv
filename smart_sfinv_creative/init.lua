@@ -2,24 +2,6 @@
 local min_group_items = 8 --Todo: setting
 
 ------------------------------------------------------------------------
--- Compat to creative mod - remove hardcoded grouped pages
-------------------------------------------------------------------------
-local function unregister_page(name)
-	sfinv.pages[name] = nil
-
-	for idx = #sfinv.pages_unordered, 1, -1 do
-		if sfinv.pages_unordered[idx].name == name then
-			table.remove(sfinv.pages_unordered, idx)
-		end
-	end
-end
-
-unregister_page("creative:nodes")
-unregister_page("creative:tools")
-unregister_page("creative:craftitems")
-
-
-------------------------------------------------------------------------
 -- Item groups collection
 ------------------------------------------------------------------------
 local itemgroups = {}
@@ -40,7 +22,6 @@ end
 -- Get group assignment for item
 ------------------------------------------------------------------------
 local function get_group_assingment(def)
-
 	-- Order all stairs and slabs to the stairs group
 	if def.groups.stair or def.groups.slab then
 		return "stairs"
@@ -54,6 +35,28 @@ end
 -- Process items after all mods loaded
 ------------------------------------------------------------------------
 minetest.after(0,function()
+	------------------------------------------------------------------------
+	-- Compat to creative mod - remove hardcoded grouped pages
+	------------------------------------------------------------------------
+	local unregister = {
+			["creative:nodes"] = true,
+			["creative:tools"] = true,
+			["creative:craftitems"] = true,
+	}
+
+	local pages_to_end = { }
+	local move_to_end = true
+	for idx = #sfinv.pages_unordered, 1, -1 do
+		local page = sfinv.pages_unordered[idx]
+		if unregister[page.name] then
+			move_to_end = false
+		elseif move_to_end then
+			table.insert(pages_to_end, 1, page)
+			sfinv.pages[page.name] = nil
+			table.remove(sfinv.pages_unordered, idx)
+		end
+	end
+
 	-- Sort items to groups
 	for itemname, def in pairs(minetest.registered_items) do
 		if def.groups.not_in_creative_inventory ~= 1 and
@@ -82,5 +85,9 @@ minetest.after(0,function()
 				table.insert(misc_group.items_unordered, def)
 			end
 		end
+	end
+
+	for _, page in ipairs(pages_to_end) do
+		sfinv.register_page(page.name, page)
 	end
 end)
