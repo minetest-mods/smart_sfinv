@@ -12,8 +12,7 @@ function sfinv.make_formspec(player, context, content, show_inv, size)
 		size = 'size['..context.page_size_x..','..context.page_size_y..']'
 	end
 	local formspec = orig_make_formspec(player, context, content, show_inv, size)
-
-	if context.nav_site and #context.nav_site > 0 then
+	if context.nav_site_enabled then
 		local newsize = 'size['..(context.page_size_x+context.site_pane_size+1)..','..(context.page_size_y)..']'
 		formspec = formspec:gsub(size:gsub("([^%w])", "%%%1"), newsize)
 		formspec = formspec .. "container_end[]"
@@ -36,15 +35,16 @@ function sfinv.get_nav_fs(player, context, nav, current_idx)
 	context.nav_above = {}
 
 	local nav_titles_site = {}
-	local current_idx_site = 0
+	context.current_idx_site = context.current_idx_site or 0
 	context.nav_site = {}
+	context.nav_site_enabled = false
 
 	for idx, page in ipairs(context.nav) do
 		if page:sub(1,9) == "creative:" then
 			table.insert(nav_titles_site, nav[idx])
 			table.insert(context.nav_site, page)
 			if idx == current_idx then
-				current_idx_site = #nav_titles_site
+				context.current_idx_site = #nav_titles_site
 			end
 		else
 			table.insert(nav_titles_above, nav[idx])
@@ -56,17 +56,24 @@ function sfinv.get_nav_fs(player, context, nav, current_idx)
 	end
 
 	local formspec = ""
+
+	-- Add the creative tab. Select it if any creative is selected
 	if #nav_titles_site > 0 then
-		formspec = formspec.."textlist[0,0;" ..(context.site_pane_size-0.2).. "," .. context.page_size_y ..
-			";smart_sfinv_nav_site;" .. table.concat(nav_titles_site, ",") ..
-			";" .. current_idx_site .. ";true]container["..(context.site_pane_size+0.5)..",0]"
+		table.insert(nav_titles_above, 2, "Creative")
+		table.insert(context.nav_above, 2, "Creative")
+		if current_idx_above == -1 then
+			context.nav_site_enabled = true
+			current_idx_above = #nav_titles_above
+			formspec = formspec.."textlist[0,0;" ..(context.site_pane_size-0.2).. "," .. context.page_size_y ..
+				";smart_sfinv_nav_site;" .. table.concat(nav_titles_site, ",") ..
+				";" .. context.current_idx_site .. ";true]container["..(context.site_pane_size+0.5)..",0]"
+		elseif current_idx_above >= 2 then
+			-- Because "Creative" is inserted, the index needs to be adjusted
+			current_idx_above = current_idx_above + 1
+		end
 	end
 
 	if #nav_titles_above > 0 then
-		if current_idx_above == -1 then
-			table.insert(nav_titles_above,"")
-			current_idx_above = #nav_titles_above
-		end
 		formspec = formspec.."tabheader[0,0;smart_sfinv_nav_tabs_above;" .. table.concat(nav_titles_above, ",") ..
 			";" .. current_idx_above .. ";true;false]"
 	end
@@ -103,6 +110,12 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			local page = sfinv.pages[id]
 			if id and page then
 				sfinv.set_page(player, id)
+			elseif id == "Creative" then
+				local id = context.nav_site[context.current_idx_site]
+				local page = sfinv.pages[id]
+				if id and page then
+					sfinv.set_page(player, id)
+				end
 			end
 		end
 
