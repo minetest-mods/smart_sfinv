@@ -63,7 +63,7 @@ function sfinv.get_nav_fs(player, context, nav, current_idx)
 		table.insert(context.nav_above, 2, "Creative")
 		if current_idx_above == -1 then
 			context.nav_site_enabled = true
-			current_idx_above = #nav_titles_above
+			current_idx_above = 2 -- Creative
 			formspec = formspec.."textlist[0,0;" ..(context.site_pane_size-0.2).. "," .. context.page_size_y ..
 				";smart_sfinv_nav_site;" .. table.concat(nav_titles_site, ",") ..
 				";" .. context.current_idx_site .. ";true]container["..(context.site_pane_size+0.5)..",0]"
