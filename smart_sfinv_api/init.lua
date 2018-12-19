@@ -14,10 +14,12 @@ Methods:
  - receive_fields(handler, player, context, fields)
 
 Method does set Attributes:
- - enh.formspec_resize
+ - enh.formspec_size
  - enh.formspec_before_navfs
  - enh.formspec_after_navfs
  - enh.formspec_after_content
+ - theme_main - Theme
+ - theme_inv  - Player inventory fields
  - enh.custom_nav_fs - if set, default is skipped
 ]]
 
@@ -78,13 +80,16 @@ local orig_make_formspec = sfinv.make_formspec
 function sfinv.make_formspec(player, context, content, show_inv, size)
 	context.sfinv_navfs_handler = nil  -- initialize handler
 	local handler = smart_sfinv_api.get_handler( context )
+	if size then
+		handler.formspec_size = size
+	end
 	local nav_fs = sfinv.get_nav_fs(player, context, context.nav_titles, context.nav_idx)
 
 	handler:run_enhancements("make_formspec", player, context)
 
 	local tmp = {
-		handler.formspec_resize or size or smart_sfinv_api.default_size,
-		smart_sfinv_api.theme_main,
+		handler.formspec_size,
+		handler.theme_main,
 		handler.formspec_before_navfs,
 		nav_fs,
 		handler.formspec_after_navfs,
@@ -92,7 +97,7 @@ function sfinv.make_formspec(player, context, content, show_inv, size)
 		handler.formspec_after_content
 	}
 	if show_inv then
-		tmp[#tmp + 1] = smart_sfinv_api.theme_inv
+		tmp[#tmp + 1] = handler.theme_inv
 	end
 	return table.concat(tmp, "")
 end
@@ -122,4 +127,4 @@ end)
 -- Initialization: hacky access to some default variables
 ----------------------------------------------
 local _dummy_page = orig_make_formspec(nil, {}, "|", true, nil)
-smart_sfinv_api.default_size, smart_sfinv_api.theme_main, smart_sfinv_api.theme_inv = _dummy_page:match("(size%[[%d.,]+%]+)([^|]+)|([^|]+)") 
+enh_handler_class.formspec_size, enh_handler_class.theme_main, enh_handler_class.theme_inv = _dummy_page:match("(size%[[%d.,]+%]+)([^|]+)|([^|]+)") 

@@ -40,7 +40,7 @@ smart_sfinv_api.register_enhancement({
 				handler.formspec_before_navfs = "textlist[0,0;2.8,8.6;smart_sfinv_nav_site;" .. table.concat(nav_titles_site, ",") ..
 					";" .. context.current_idx_site .. ";true]container[3.5,0]"..handler.formspec_before_navfs
 				handler.formspec_after_content = handler.formspec_after_content.."container_end[]"
-				handler.formspec_resize = 'size[11,8.6]'
+				handler.formspec_size = 'size[11,8.6]'
 			elseif current_idx_above >= 2 then
 				-- Because "Creative" is inserted, the index needs to be adjusted
 				current_idx_above = current_idx_above + 1
