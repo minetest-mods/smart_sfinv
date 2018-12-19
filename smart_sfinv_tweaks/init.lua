@@ -7,7 +7,7 @@ smart_sfinv_api.defaults.theme_inv = smart_sfinv_api.defaults.theme_inv ..
 		'tooltip[sfinv_tweaks_rotate;Rotate rows]'
 
 
-local crafting_enhance = 	'image_button[0.5,1.6;0.8,0.8;smart_sfinv_tweaks_sweep_button.png;sfinv_tweaks_sweep;]' ..
+local crafting_enhance = 'image_button[0.5,1.6;0.8,0.8;smart_sfinv_tweaks_sweep_button.png;sfinv_tweaks_sweep;]' ..
 		'tooltip[sfinv_tweaks_sweep;Sweep crafting area]'
 
 smart_sfinv_api.register_enhancement({

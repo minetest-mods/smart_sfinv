@@ -38,7 +38,7 @@ smart_sfinv_api.register_enhancement({
 			if current_idx_above == -1 then
 				current_idx_above = 2 -- Creative
 				handler.formspec_before_navfs = "textlist[0,0;2.8,8.6;smart_sfinv_nav_site;" .. table.concat(nav_titles_site, ",") ..
-					";" .. context.current_idx_site .. ";true]container[3.5,0]"..handler.formspec_before_navfs
+					";" .. context.current_idx_site .. ";true]container[3,0]"..handler.formspec_before_navfs
 				handler.formspec_after_content = handler.formspec_after_content.."container_end[]"
 				handler.formspec_size = 'size[11,8.6]'
 			elseif current_idx_above >= 2 then
