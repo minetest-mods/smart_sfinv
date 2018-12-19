@@ -9,7 +9,7 @@ smart_sfinv_api = {
 --[[
 Methods:
 
- - make_formspec(enh, player, context)
+ - make_formspec(enh, player, context, content, show_inv)
  - get_nav_fs(enh, player, context, nav, current_idx)
  - receive_fields(handler, player, context, fields)
 
@@ -35,6 +35,7 @@ local enh_handler_class = {
 		formspec_after_navfs = "",
 		formspec_after_content = ""
 	}
+smart_sfinv_api.defaults = enh_handler_class
 enh_handler_class_meta = {__index = enh_handler_class }
 
 function enh_handler_class:run_enhancements(enh_method, ...)
@@ -85,7 +86,7 @@ function sfinv.make_formspec(player, context, content, show_inv, size)
 	end
 	local nav_fs = sfinv.get_nav_fs(player, context, context.nav_titles, context.nav_idx)
 
-	handler:run_enhancements("make_formspec", player, context)
+	handler:run_enhancements("make_formspec", player, context, content, show_inv)
 
 	local tmp = {
 		handler.formspec_size,
@@ -94,11 +95,9 @@ function sfinv.make_formspec(player, context, content, show_inv, size)
 		nav_fs,
 		handler.formspec_after_navfs,
 		content,
+		show_inv and handler.theme_inv or "",
 		handler.formspec_after_content
 	}
-	if show_inv then
-		tmp[#tmp + 1] = handler.theme_inv
-	end
 	return table.concat(tmp, "")
 end
 
