@@ -1,6 +1,8 @@
 
 local min_group_items = 8 --Todo: setting
 
+local mapping = dofile(minetest.get_modpath(minetest.get_current_modname())..'/mapping.lua')
+
 ------------------------------------------------------------------------
 -- Item groups collection
 ------------------------------------------------------------------------
@@ -22,13 +24,14 @@ end
 -- Get group assignment for item
 ------------------------------------------------------------------------
 local function get_group_assingment(def)
-	-- Order all stairs and slabs to the stairs group
-	if def.groups.stair or def.groups.slab then
-		return "stairs"
+	for group, _ in pairs(def.groups) do
+		if mapping.by_group[group] then
+			return mapping.by_group[group]
+		end
 	end
 
 	-- Group by mod origin by default
-	return def.mod_origin
+	return mapping.by_mod[def.mod_origin] or def.mod_origin
 end
 
 ------------------------------------------------------------------------
