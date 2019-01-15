@@ -15,6 +15,8 @@ Methods:
 
 Method does set Attributes:
  - enh.formspec_size
+ - enh.formspec_size_add_w
+ - enh.formspec_size_add_h
  - enh.formspec_before_navfs
  - enh.formspec_after_navfs
  - enh.formspec_after_content
@@ -33,7 +35,9 @@ end
 local enh_handler_class = {
 		formspec_before_navfs = "",
 		formspec_after_navfs = "",
-		formspec_after_content = ""
+		formspec_after_content = "",
+		formspec_size_add_w = 0,
+		formspec_size_add_h = 0,
 	}
 smart_sfinv_api.defaults = enh_handler_class
 enh_handler_class_meta = {__index = enh_handler_class }
@@ -84,12 +88,30 @@ function sfinv.make_formspec(player, context, content, show_inv, size)
 	if size then
 		handler.formspec_size = size
 	end
+
+	handler.formspec_size_add_w = 0
+	handler.formspec_size_add_h = 0
+
 	local nav_fs = sfinv.get_nav_fs(player, context, context.nav_titles, context.nav_idx)
 
 	handler:run_enhancements("make_formspec", player, context, content, show_inv)
 
+	local new_size
+	if handler.formspec_size_add_w ~= 0 or handler.formspec_size_add_h ~= 0 then
+		local b = "false"
+		local w, h = string.match(handler.formspec_size, "%[([%d.]+)%,([%d.]+)%]")
+		if not w or not h then
+			w, h, b = string.match(handler.formspec_size, "%[([%d.]+)%,([%d.]+)%;(%s+)%]")
+		end
+
+		w = w + handler.formspec_size_add_w
+		h = h + handler.formspec_size_add_h
+		new_size = "size[" .. w .. "," .. h .. ";" .. b .."]"
+	end
+
+
 	local tmp = enh_handler_class.patch_2275 and {
-		handler.formspec_size,
+		new_size or handler.formspec_size,
 		handler.theme_main,
 		handler.formspec_before_navfs,
 		nav_fs,
@@ -98,7 +120,7 @@ function sfinv.make_formspec(player, context, content, show_inv, size)
 		content,
 		handler.formspec_after_content
 	} or { -- can be removed if patch_2275 merged to upstream
-		handler.formspec_size,
+		new_size or handler.formspec_size,
 		handler.theme_main,
 		handler.formspec_before_navfs,
 		nav_fs,
