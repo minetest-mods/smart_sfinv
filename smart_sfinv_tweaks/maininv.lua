@@ -1,6 +1,6 @@
 -- Enhanced main inventory methods
 local maininvClass = {}
-maininvClass_mt = {__index = maininvClass}
+local maininvClass_mt = {__index = maininvClass}
 
 -- Clear the inventory
 function maininvClass:remove_all()

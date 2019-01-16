@@ -40,7 +40,7 @@ local enh_handler_class = {
 		formspec_size_add_h = 0,
 	}
 smart_sfinv_api.defaults = enh_handler_class
-enh_handler_class_meta = {__index = enh_handler_class }
+local enh_handler_class_meta = {__index = enh_handler_class }
 
 function enh_handler_class:run_enhancements(enh_method, ...)
 	for _, enh in ipairs(smart_sfinv_api.registered_enhancements) do
