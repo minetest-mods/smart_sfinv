@@ -12,6 +12,8 @@ Author: bell07
 ## Mods List
 Mod | Description
 -- | --
+creative_maxstack | Set all stacks to maximum count on creative pages
+sfinv_buttons | Adds panel with extra buttons from other mods on the right site
 smart_sfinv_api | Smart enhancements interface API - Used in other mods
 smart_sfinv_creative_bymod | Replace the default items grouping (Nodes, Tools, Items) by more meaningfull groups per installed mod
 smart_sfinv_creative_sitebar | Move all creative groups to left site table for beter overview
